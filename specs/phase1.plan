@@ -1,0 +1,348 @@
+# Detailed Plan: Phase 1 - Todo CLI Evolution
+
+## 1. Folder Structure
+```
+todo-cli-app/
+├── src/
+│   ├── __init__.py
+│   ├── models.py        # Task data model
+│   ├── repository.py    # Repository interface and implementations
+│   ├── service.py       # Business logic service layer (The "Brain")
+│   └── cli.py           # Command-line interface
+├── tests/
+│   ├── __init__.py
+│   └── test_service.py  # Unit tests for business logic
+├── pyproject.toml       # Project dependencies and metadata
+├── README.md            # Project documentation
+└── CLAUDE.md            # Build/test commands for Claude Code
+```
+
+## 2. Data Model
+### Task Dataclass
+Using a Python dataclass for the Task object with required fields:
+
+```python
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class Task:
+    id: int
+    title: str
+    description: Optional[str] = None
+    completed: bool = False
+```
+
+## 3. Repository Pattern (The "Storage")
+### Repository Interface
+An abstract interface for storage operations:
+
+```python
+from abc import ABC, abstractmethod
+from typing import List, Optional
+from models import Task
+
+class TaskRepository(ABC):
+    @abstractmethod
+    def get_all(self) -> List[Task]:
+        """Return all tasks"""
+        pass
+
+    @abstractmethod
+    def get_by_id(self, task_id: int) -> Optional[Task]:
+        """Find task by ID"""
+        pass
+
+    @abstractmethod
+    def add(self, task: Task) -> Task:
+        """Add a new task to the repository"""
+        pass
+
+    @abstractmethod
+    def update(self, task_id: int, **updates) -> Optional[Task]:
+        """Update a task by ID"""
+        pass
+
+    @abstractmethod
+    def delete(self, task_id: int) -> bool:
+        """Delete a task by ID"""
+        pass
+
+    @abstractmethod
+    def generate_id(self) -> int:
+        """Generate next available ID"""
+        pass
+```
+
+### In-Memory Repository Implementation
+Concrete implementation of the repository interface for in-memory storage:
+
+```python
+from typing import List, Optional
+from models import Task
+from repository import TaskRepository
+
+class InMemoryTaskRepository(TaskRepository):
+    def __init__(self):
+        self._tasks: List[Task] = []
+        self._next_id: int = 1  # For ID generation
+
+    def get_all(self) -> List[Task]:
+        """Return all tasks"""
+        return self._tasks.copy()
+
+    def get_by_id(self, task_id: int) -> Optional[Task]:
+        """Find task by ID"""
+        for task in self._tasks:
+            if task.id == task_id:
+                return task
+        return None
+
+    def add(self, task: Task) -> Task:
+        """Add a new task to the repository"""
+        self._tasks.append(task)
+        return task
+
+    def update(self, task_id: int, **updates) -> Optional[Task]:
+        """Update a task by ID"""
+        task = self.get_by_id(task_id)
+        if task:
+            for field, value in updates.items():
+                if hasattr(task, field):
+                    setattr(task, field, value)
+            return task
+        return None
+
+    def delete(self, task_id: int) -> bool:
+        """Delete a task by ID"""
+        task = self.get_by_id(task_id)
+        if task:
+            self._tasks.remove(task)
+            return True
+        return False
+
+    def generate_id(self) -> int:
+        """Generate next available ID"""
+        new_id = self._next_id
+        self._next_id += 1
+        return new_id
+```
+
+## 4. Service Layer (The "Brain")
+### TodoService - Business Logic Layer
+A service class that implements all business logic, depending on the repository interface:
+
+```python
+from typing import List, Optional
+from models import Task
+from repository import TaskRepository
+
+class TodoService:
+    def __init__(self, repository: TaskRepository):
+        """
+        Service layer receives repository via dependency injection.
+        This allows for easy testing and future replacement of storage implementations.
+        """
+        self._repository = repository
+
+    def add_task(self, title: str, description: Optional[str] = None) -> Task:
+        """Add a new task with validation"""
+        if not title or not title.strip():
+            raise ValueError("Title cannot be empty")
+
+        new_id = self._repository.generate_id()
+        task = Task(id=new_id, title=title.strip(), description=description, completed=False)
+        return self._repository.add(task)
+
+    def get_all_tasks(self) -> List[Task]:
+        """Get all tasks"""
+        return self._repository.get_all()
+
+    def update_task(self, task_id: int, title: Optional[str] = None, description: Optional[str] = None) -> Optional[Task]:
+        """Update task with validation"""
+        task = self._repository.get_by_id(task_id)
+        if not task:
+            raise ValueError(f"Task with ID {task_id} does not exist")
+
+        updates = {}
+        if title is not None:
+            if not title.strip():
+                raise ValueError("Title cannot be empty")
+            updates['title'] = title.strip()
+        if description is not None:
+            updates['description'] = description
+
+        return self._repository.update(task_id, **updates)
+
+    def complete_task(self, task_id: int) -> bool:
+        """Mark task as completed"""
+        task = self._repository.get_by_id(task_id)
+        if not task:
+            raise ValueError(f"Task with ID {task_id} does not exist")
+
+        result = self._repository.update(task_id, completed=True)
+        return result is not None
+
+    def delete_task(self, task_id: int) -> bool:
+        """Delete task with validation"""
+        if not self._repository.get_by_id(task_id):
+            raise ValueError(f"Task with ID {task_id} does not exist")
+
+        return self._repository.delete(task_id)
+```
+
+## 5. CLI Interface
+### Using argparse for command parsing
+The CLI will use argparse for clean command-line argument parsing and will receive the service via dependency injection:
+
+```python
+import argparse
+import sys
+from typing import Optional
+from service import TodoService
+from repository import InMemoryTaskRepository
+
+class TodoCLI:
+    def __init__(self, service: TodoService):
+        """
+        CLI receives service via dependency injection.
+        This ensures the CLI only handles presentation logic while business logic
+        remains in the service layer.
+        """
+        self.service = service
+
+    @classmethod
+    def create_default(cls):
+        """
+        Factory method to create a CLI instance with default dependencies.
+        This is the main entry point that wires up all components.
+        """
+        repository = InMemoryTaskRepository()
+        service = TodoService(repository)
+        return cls(service)
+
+    def run(self, args: Optional[list] = None):
+        """Main CLI entry point"""
+        parser = argparse.ArgumentParser(description="Todo CLI Application")
+        subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+        # Add command
+        add_parser = subparsers.add_parser("add", help="Add a new task")
+        add_parser.add_argument("title", help="Task title")
+        add_parser.add_argument("description", nargs="?", default=None, help="Task description")
+
+        # List command
+        list_parser = subparsers.add_parser("list", help="List all tasks")
+
+        # Update command
+        update_parser = subparsers.add_parser("update", help="Update a task")
+        update_parser.add_argument("id", type=int, help="Task ID")
+        update_parser.add_argument("--title", help="New task title")
+        update_parser.add_argument("--description", help="New task description")
+
+        # Complete command
+        complete_parser = subparsers.add_parser("complete", help="Mark task as complete")
+        complete_parser.add_argument("id", type=int, help="Task ID")
+
+        # Delete command
+        delete_parser = subparsers.add_parser("delete", help="Delete a task")
+        delete_parser.add_argument("id", type=int, help="Task ID")
+
+        parsed_args = parser.parse_args(args)
+
+        try:
+            if parsed_args.command == "add":
+                self.add_command(parsed_args.title, parsed_args.description)
+            elif parsed_args.command == "list":
+                self.list_command()
+            elif parsed_args.command == "update":
+                self.update_command(parsed_args.id, parsed_args.title, parsed_args.description)
+            elif parsed_args.command == "complete":
+                self.complete_command(parsed_args.id)
+            elif parsed_args.command == "delete":
+                self.delete_command(parsed_args.id)
+            else:
+                parser.print_help()
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    def add_command(self, title: str, description: str):
+        """Handle add command"""
+        task = self.service.add_task(title, description)
+        print(f"Task #{task.id} created: {task.title}")
+
+    def list_command(self):
+        """Handle list command"""
+        tasks = self.service.get_all_tasks()
+        if not tasks:
+            print("No tasks found.")
+            return
+
+        for task in tasks:
+            status = "[x]" if task.completed else "[ ]"
+            print(f"{task.id}. {status} {task.title}")
+            if task.description:
+                print(f"   {task.description}")
+
+    def update_command(self, task_id: int, title: str, description: str):
+        """Handle update command"""
+        task = self.service.update_task(task_id, title, description)
+        print(f"Task #{task.id} updated: {task.title}")
+
+    def complete_command(self, task_id: int):
+        """Handle complete command"""
+        self.service.complete_task(task_id)
+        print(f"Task #{task_id} marked as complete.")
+
+    def delete_command(self, task_id: int):
+        """Handle delete command"""
+        self.service.delete_task(task_id)
+        print(f"Task #{task_id} deleted.")
+```
+
+## 6. Validation Strategy
+### Handling non-existent IDs and empty titles
+- **Empty titles**: The `add_task` and `update_task` methods validate that titles are not empty or just whitespace
+- **Non-existent IDs**: All operations that require a task ID first check if the task exists using `get_by_id`
+- **Error handling**: ValueError exceptions are raised with descriptive messages when validation fails
+
+## 7. Critical Architect Details
+
+### ID Generation
+- The `InMemoryTaskRepository` class maintains a `_next_id` counter starting at 1
+- The `generate_id()` method returns the current ID and increments the counter
+- This ensures unique, sequential IDs for each new task
+
+### Separation of Concerns
+- **CLI layer** (`cli.py`): Handles user input/output, argument parsing, and display formatting
+- **Service layer** (`service.py`): Contains all business logic, validation, and acts as the "Brain"
+- **Repository layer** (`repository.py`): Handles data storage and retrieval through an interface
+- **Data layer** (`models.py`): Defines the data structure for tasks
+- This clear separation allows the CLI to be replaced with a Web API in Phase II without changing the business logic
+
+### Dependency Injection
+- The `TodoService` receives its `TaskRepository` via constructor injection
+- The `TodoCLI` receives its `TodoService` via constructor injection
+- This allows for easy testing with mock repositories and future replacement of storage implementations
+- The service layer depends on the repository interface, not concrete implementations
+
+### Edge Cases
+- **Deleting non-existent ID**: The `delete_task` method raises a ValueError if the task ID doesn't exist
+- **Updating non-existent ID**: The `update_task` method raises a ValueError if the task ID doesn't exist
+- **Completing non-existent ID**: The `complete_task` method raises a ValueError if the task ID doesn't exist
+- **Empty title validation**: All methods that accept a title validate it's not empty or just whitespace
+
+## 8. Implementation Approach
+- Clean architecture with Service Layer (TodoService) as the "Brain"
+- Repository Pattern with abstract interface for storage operations
+- Dependency injection to connect components
+- In-memory storage as required by specification
+- Proper error handling and validation
+- Clean separation between presentation (CLI), business logic (Service), and data access (Repository)
+- Testable components with clear interfaces that can be easily mocked
+
+## 9. Dependencies
+- Python 3.13+
+- `uv` for dependency management
+- Standard library only (no external dependencies for Phase 1)

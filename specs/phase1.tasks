@@ -1,0 +1,34 @@
+# Tasks: Phase 1 - Todo CLI Evolution
+
+## 1. Create Project Structure
+- Create src/ directory
+- Create tests/ directory
+
+## 2. Implement Data Model
+- Create src/models.py
+- Implement Task dataclass with id, title, description, and completed fields
+
+## 3. Implement Repository Pattern
+- Create src/repository.py
+- Implement TaskRepository abstract interface
+- Implement InMemoryTaskRepository concrete class
+
+## 4. Implement Service Layer
+- Create src/service.py
+- Implement TodoService class with all business logic
+- Ensure dependency injection of repository
+
+## 5. Implement CLI Interface
+- Create src/cli.py
+- Implement TodoCLI class with argparse
+- Ensure dependency injection of service
+
+## 6. Create Unit Tests
+- Create tests/test_service.py
+- Write unit tests for all TodoService methods
+- Test all edge cases and error conditions
+
+## 7. Create Documentation
+- Create CLAUDE.md
+- Add commands to run the application
+- Add commands to run the tests
