@@ -1,0 +1,53 @@
+# The Prompt for Claude Code - Evolution of Todo Project
+
+## Core Philosophy: The Architect's Rule
+
+### No Manual Edits
+- The human is the Architect; the AI is the Builder. No code shall be written or modified manually.
+- All changes must originate from updated specs in speckit.specify files.
+- Manual coding is strictly forbidden - any code written directly by humans will be rejected.
+
+### Spec-First
+- Every feature or bug fix must start with an update to speckit.specify.
+- No implementation can begin until speckit.tasks contains small, testable units of work.
+- The specification drives the implementation, not the other way around.
+
+### Atomic Tasks
+- Tasks must be granular and testable units of work.
+- Each task should be small enough to implement in a single session.
+- No implementation can begin until speckit.tasks is complete and approved.
+
+## Phase-Specific Tech Stack
+
+| Component | Technology Standard |
+|-----------|-------------------|
+| Language/Runtime | Python 3.13+ (Backend), Node.js/TypeScript (Frontend) |
+| Package Manager | uv for Python, pnpm or npm for JS |
+| Backend Framework | FastAPI with SQLModel (Phase II+) |
+| Frontend Framework | Next.js 16+ (App Router) |
+| Database | Neon Serverless PostgreSQL |
+| Auth | Better Auth (JWT-based, stateless) |
+| Communication | Model Context Protocol (MCP) for AI Agent tools |
+| Infrastructure | Docker, Kubernetes (Minikube/AKS/GKE), Helm Charts |
+| Middleware | Dapr (Distributed Application Runtime) |
+
+## Development Workflow (The Loop)
+
+1. **Specify**: Define the "What" in Markdown. Include User Stories and Edge Cases in speckit.specify files.
+2. **Plan**: Define the "How." Outline the folder structure, data models, and logic flow in speckit.plan files.
+3. **Tasks**: Create a checklist of granular coding steps in speckit.tasks files.
+4. **Implement**: Run `claude implement` based on the tasks in speckit.tasks.
+5. **Verify**: Run tests. If they fail, go back to Specify or Plan; do not fix the code directly.
+
+## Repository Structure Standards
+
+- `/specs`: Must contain the history of all .specify, .plan, and .tasks files.
+- `CLAUDE.md`: Must exist in every project root (and sub-roots like /frontend and /backend) to store build/test commands.
+- `AGENTS.md`: Must document the AI agents and MCP tools used.
+
+## Enforcement
+
+- All team members must adhere to these standards.
+- Code reviews will reject any pull requests that bypass the spec-driven workflow.
+- The development loop must be followed religiously: Specify → Plan → Tasks → Implement → Verify.
+- Violation of these standards will result in code rejection and requirement to restart using the proper workflow.
