@@ -1,88 +1,184 @@
-# Phase 1 Hackathon - Todo CLI App with Speckit Integration
+Hackathon Phase-2 — The Evolution of Todo (Full-Stack)
+📌 Overview
 
-## Project Overview
-This project is a Todo CLI application developed as part of the Hackathon Phase 1. It features integration with Speckit for enhanced functionality.
+This repository contains the Phase-2 implementation of the Evolution of Todo project, built as part of the Hackathon using a Spec-Driven Development methodology (Spec-Kit Plus).
 
-## Features
-- Command-line interface for managing todo items
-- Speckit integration for advanced features
-- Console-based application for efficient task management
+Phase-2 extends Phase-1 by introducing:
 
-## Repository Structure
-- `.claude/` - Claude Code configuration files
-- `specs/` - Project specifications
-- `todo-console-app/` - Main Todo CLI application source code
-- `speckit.constitution` - Speckit configuration file
-- `speckit.specify` - Speckit specification file
+Full-stack architecture
 
-## Getting Started
+Authentication & authorization
 
-### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- PostgreSQL database (or use SQLite for development)
+Persistent database
 
-### Installation
+Multi-user task isolation
 
-#### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd Phase-2/backend
-   ```
-2. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   # Or using Poetry if preferred
-   poetry install
-   ```
-3. Copy the example environment file and update with your settings:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your database credentials and secrets
-   ```
-4. Run database migrations:
-   ```bash
-   python -m alembic upgrade head
-   ```
+Secure frontend–backend integration
 
-#### Frontend Setup
-1. Navigate to the frontend directory:
-   ```bash
-   cd Phase-2/frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy the example environment file:
-   ```bash
-   cp .env.local.example .env.local
-   # Edit .env.local with your API settings
-   ```
+All development follows the required workflow:
 
-### Running the Application
+Constitution → Specification → Planning → Tasks → Implementation
 
-#### Backend (in one terminal):
-```bash
-cd Phase-2/backend
-uvicorn src.main:app --reload --port 8000
-```
+pec-Driven Development (Spec-Kit Plus)
 
-#### Frontend (in another terminal):
-```bash
-cd Phase-2/frontend
+This project strictly follows Spec-Kit Plus conventions:
+
+1️⃣ Constitution
+
+Defines:
+
+Development rules
+
+No-manual-coding constraint
+
+Security and quality standards
+
+2️⃣ Specification
+
+Defines:
+
+Functional requirements
+
+User stories
+
+API behavior
+
+Auth & isolation requirements
+
+3️⃣ Planning
+
+Defines:
+
+Architecture decisions
+
+Tech stack
+
+Data models
+
+Security strategy
+
+4️⃣ Tasks
+
+Defines:
+
+Granular task breakdown
+
+Ordered execution
+
+Feature-to-code mapping
+
+📁 All artifacts are available in specs/
+
+🔐 Authentication & Security
+Authentication
+
+JWT-based authentication
+
+Token issued on login
+
+Token required for all protected routes
+
+Authorization & Isolation
+
+JWT user identity is authoritative
+
+Path parameters validated against JWT user
+
+Database queries filtered by user_id
+
+Cross-user data access is prevented
+
+🚨 Security is enforced at API + DB level
+
+🧩 Backend (FastAPI)
+
+Features
+
+RESTful API
+
+JWT auth
+
+SQLModel ORM
+
+PostgreSQL database
+
+Alembic migrations
+
+Core Endpoints
+
+Auth (signup / signin)
+
+Create task
+
+Read user tasks
+
+Update task
+
+Delete task
+
+📁 Located in backend/
+
+🎨 Frontend (Next.js / React)
+
+Features
+
+Authentication flows (signin/signup)
+
+Protected routes
+
+Token-based API requests
+
+User-specific task UI
+
+Security
+
+JWT attached to all protected API calls
+
+Unauthorized access blocked at routing level
+
+📁 Located in frontend/
+
+🔁 Frontend ↔ Backend Integration
+
+JWT stored securely on client
+
+API client attaches token automatically
+
+Backend verifies token on every request
+
+Errors handled gracefully
+
+🧾 History & Evidence
+
+📁 history/ contains:
+
+Prompt trails
+
+Decision logs
+
+Evidence of:
+
+Spec → Plan → Tasks → Implementation
+
+This provides full auditability for judges.
+
+🧪 Testing
+
+Backend unit tests included
+
+API behavior validated
+
+Auth and isolation logic verified
+
+📁 backend/tests/
+
+⚙️ How to Run (Local)
+Backend
+cd backend
+pip install -r requirements.txt
+uvicorn src.api.main:app --reload
+
+Frontend
+cd frontend
+npm install
 npm run dev
-```
-
-The application will be available at http://localhost:3000
-
-## Technologies Used
-- Python (for the CLI application)
-- Speckit integration
-- Various utility scripts and configurations
-
-## Project Status
-Complete Hackathon Phase 1 - Todo CLI App with Speckit integration
-
-## Last Updated
-Updated on January 4, 2026 - Testing commit functionality
