@@ -1,0 +1,25 @@
+[project]
+name = "todo-cli-app"
+version = "0.1.0"
+description = "A CLI-based todo application"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+authors = [
+    {name = "Developer", email = "developer@example.com"}
+]
+
+dependencies = [
+]
+
+[project.scripts]
+todo = "src.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

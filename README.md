@@ -1,3 +1,13 @@
+# Hackathon II - Evolution of Todo
+Monorepo with all phases.
+
+- phase1/ → In-Memory Python CLI Todo App
+- phase2/ → Full-Stack Web App (Next.js + FastAPI)
+- phase3/ → AI Chatbot
+- phase4/ → Local K8s Deployment
+- phase5/ → Advanced Cloud Deployment
+
+
 # Phase 1 Hackathon - Todo CLI App with Speckit Integration
 
 ## Project Overview

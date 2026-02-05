@@ -1,0 +1,24 @@
+# Specification: Phase 1 - Todo CLI Evolution
+
+## 1. Vision
+Build a high-performance, in-memory Python CLI Todo application. This serves as the logic core for all future phases (Web, AI Agent, and Kubernetes).
+
+## 2. Requirements (The Five Pillars)
+The application must support the following operations via the command line:
+1. **ADD**: Create a task with a Title and optional Description.
+2. **LIST**: View all tasks with their ID, Status ([ ] for incomplete, [x] for complete), and Title.
+3. **UPDATE**: Edit the Title or Description of an existing task using its ID.
+4. **COMPLETE**: Toggle a task's status to "Done."
+5. **DELETE**: Permanently remove a task using its ID.
+
+## 3. Technical Constraints
+- **Language**: Python 3.13+
+- **Environment**: Must run inside WSL2 (Ubuntu 22.04).
+- **Dependency Management**: Use `uv`.
+- **Persistence**: In-memory only (Data resets when the app closes).
+- **Code Style**: Functional approach with clear separation between CLI logic and Task logic.
+
+## 4. User Journeys
+- **Journey A**: User types `add "Buy Milk"`, the app confirms task #1 is created.
+- **Journey B**: User types `list`, the app shows a formatted table of all tasks.
+- **Journey C**: User types `complete 1`, the app updates task #1 and confirms.
