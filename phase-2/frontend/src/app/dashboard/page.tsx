@@ -15,7 +15,8 @@ import { toast } from '@/components/ui/toast';
 
 function DashboardPageContent() {
   const router = useRouter();
-  const { data: session, isLoading: sessionLoading } = useSession();
+  const { data: session, status } = useSession();
+  const sessionLoading = status === 'loading';
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);

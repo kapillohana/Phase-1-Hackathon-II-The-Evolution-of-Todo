@@ -140,7 +140,7 @@ const ToastItem = ({ toast }: { toast: Toast }) => {
         )}
       </div>
       <button
-        onClick={() => toast.dismiss(toast.id)}
+        onClick={() => removeToast(toast.id)}
         className="ml-4 flex-shrink-0 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
       >
         <X className="h-4 w-4" />

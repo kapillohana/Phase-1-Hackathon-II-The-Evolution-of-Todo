@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth'; // Use the context-based auth
-import ErrorMessage from '../../../components/ErrorMessage'; // We'll create this component
-import LoadingSpinner from '../../../components/LoadingSpinner'; // We'll create this component
+import ErrorMessage from '@/components/ErrorMessage'; // We'll create this component
+import LoadingSpinner from '@/components/LoadingSpinner'; // We'll create this component
 
 export default function SignUpPage() {
   const router = useRouter();

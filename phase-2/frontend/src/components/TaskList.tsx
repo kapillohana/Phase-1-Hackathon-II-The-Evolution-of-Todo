@@ -57,7 +57,14 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleComplete }: 
 }
 
 // SortableTaskItem component for drag-and-drop functionality (optional)
-export function SortableTaskItem({ task, onEdit, onDelete, onToggleComplete }: TaskListProps) {
+interface SortableTaskItemProps {
+  task: Task;
+  onEdit: (task: Task) => void;
+  onDelete: (taskId: number) => void;
+  onToggleComplete: (taskId: number) => void;
+}
+
+export function SortableTaskItem({ task, onEdit, onDelete, onToggleComplete }: SortableTaskItemProps) {
   const {
     attributes,
     listeners,
