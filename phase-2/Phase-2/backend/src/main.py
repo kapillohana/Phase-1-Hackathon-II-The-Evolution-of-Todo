@@ -1,7 +1,7 @@
 """
 Main entry point for the Advanced Todo Application backend
 Sets up the FastAPI application and includes all API routes
-Deployment ready for Hugging Face Spaces - Updated workflow
+Deployment ready for Hugging Face Spaces - Updated workflow with README
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
