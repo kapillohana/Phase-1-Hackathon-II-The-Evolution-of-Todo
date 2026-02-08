@@ -29,7 +29,7 @@ jobs:
         SPACE_NAME: ${{ secrets.SPACE_NAME }}
       run: |
         # Navigate to the backend directory
-        cd phase-2/Phase-2/backend
+        cd $GITHUB_WORKSPACE/phase-2/Phase-2/backend
         
         # Initialize git repo for the space
         git init
