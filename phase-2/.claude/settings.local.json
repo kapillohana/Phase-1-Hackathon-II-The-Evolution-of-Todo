@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la *.db)",
+      "Bash(find ../frontend -name \"*.tsx\" -type f -exec grep -l \"nav\\\\|logout\\\\|signout\\\\|menu\" {} ;)",
+      "Bash(find ./Phase-1-Hackathon-II-The-Evolution-of-Todo/frontend/src -name \"*.tsx\" -path \"*/app/*\" -exec grep -l \"dashboard\\\\|Dashboard\\\\|auth\\\\|protected\" {} ;)",
+      "Bash(./.venv/Scripts/python.exe check_database_state.py)",
+      "Bash(find ./Phase-1-Hackathon-II-The-Evolution-of-Todo/frontend/src -name \"*.ts\" -o -name \"*.tsx\" -exec grep -l \"fetch\\\\|api\\\\|token\" {} ;)",
+      "Bash(xargs ls -la)",
+      "Bash(cat backend/.env)",
+      "Bash(cat frontend/.env.local)",
+      "Bash(git rm --cached backend/.env frontend/.env.local todo_app.db .claude/ .spec-kit/ .specify/ history/ migrations/)",
+      "Bash(find . -name \"*.pyc\" -delete)",
+      "Bash(find . -name \"__pycache__\" -type d -exec rm -rf {} +)",
+      "Bash(npm run build)",
+      "Bash(uvicorn:*)"
+    ]
+  }
+}

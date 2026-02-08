@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "advanced-todo-backend"
+version = "1.0.0"
+description = "Advanced Todo Application Backend"
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+sqlmodel = "^0.0.16"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+python-dotenv = "^1.0.0"
+pyjwt = "^2.8.0"
+bcrypt = "^4.0.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+psycopg2-binary = "^2.9.9"
+email-validator = "^2.1.0.post1"
+cryptography = "^42.0.0"
+alembic = "^1.13.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
