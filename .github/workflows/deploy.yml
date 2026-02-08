@@ -31,11 +31,12 @@ jobs:
         # Navigate to the backend directory
         cd $GITHUB_WORKSPACE/phase-2/Phase-2/backend
         
-        # Initialize git repo for the space
-        git init
-        git remote add origin https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${SPACE_NAME}
-        git fetch
-        git reset origin/main --hard
+        # Clone the existing space repository
+        git clone https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${SPACE_NAME} temp_space
+        cd temp_space
+        
+        # Copy all files from the backend directory to the space
+        rsync -av --delete $GITHUB_WORKSPACE/phase-2/Phase-2/backend/ ./ --exclude temp_space/
         
         # Configure git
         git config --local user.name "GitHub Action"
@@ -44,6 +45,11 @@ jobs:
         # Add all files
         git add .
         
-        # Commit and push
-        git commit -m "Update Space from GitHub Actions" || exit 0
-        git push origin main
+        # Check if there are changes to commit
+        if ! git diff --cached --quiet; then
+          git commit -m "Update Space from GitHub Actions"
+          git push origin main
+          echo "Changes pushed to Hugging Face Space"
+        else
+          echo "No changes detected, skipping push"
+        fi
