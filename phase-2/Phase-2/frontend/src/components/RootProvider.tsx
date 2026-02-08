@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthProvider } from '../lib/auth';
+import { AuthProvider } from '@/lib/auth';
 import { useState, useEffect } from 'react';
 
 interface RootProviderProps {

@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useSession } from '../../lib/auth';
-import { taskApi, Task } from '../../lib/api';
+import { useSession } from '@/lib/auth';
+import { taskApi, Task } from '@/lib/api';
 import { TaskCard } from '@/components/ui/task-card';
 import { Button } from '@/components/ui/button';
 import { TaskForm } from '@/components/ui/task-form';

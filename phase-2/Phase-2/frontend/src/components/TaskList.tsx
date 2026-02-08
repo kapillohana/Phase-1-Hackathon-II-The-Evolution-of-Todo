@@ -1,6 +1,6 @@
 'use client';
 
-import { Task } from '../lib/api'; // Adjust import path as needed
+import { Task } from '@/lib/api'; // Adjust import path as needed
 import TaskItem from './TaskItem'; // Adjust import path as needed
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';

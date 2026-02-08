@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarIcon, ClockIcon, TagIcon, ArrowPathIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleSolidIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
-import { Task } from '../lib/api'; // Adjust import path as needed
+import { Task } from '@/lib/api'; // Adjust import path as needed
 
 interface TaskItemProps {
   task: Task;

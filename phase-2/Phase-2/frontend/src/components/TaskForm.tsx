@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Task } from '../lib/api'; // Adjust import path as needed
+import { Task } from '@/lib/api'; // Adjust import path as needed
 import ErrorMessage from './ErrorMessage'; // We'll create this component
 import LoadingSpinner from './LoadingSpinner'; // We'll create this component
 
