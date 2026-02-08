@@ -354,7 +354,7 @@ function DashboardPageContent() {
               <p>Please clear your browser cookies and refresh the page, or try logging out and back in.</p>
               <button
                 onClick={() => {
-                  import('../../lib/auth').then(({ forceLogout }) => {
+                  import('@/lib/auth').then(({ forceLogout }) => {
                     forceLogout();
                   });
                 }}
