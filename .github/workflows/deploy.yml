@@ -35,8 +35,12 @@ jobs:
         git clone https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${SPACE_NAME} temp_space
         cd temp_space
         
+        # Remove all files except .git directory
+        find . -type 'f' -not -path './.git/*' -delete
+        find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+        
         # Copy all files from the backend directory to the space
-        rsync -av --delete $GITHUB_WORKSPACE/phase-2/Phase-2/backend/ ./ --exclude temp_space/
+        rsync -av --exclude='temp_space/' $GITHUB_WORKSPACE/phase-2/Phase-2/backend/ ./
         
         # Configure git
         git config --local user.name "GitHub Action"
