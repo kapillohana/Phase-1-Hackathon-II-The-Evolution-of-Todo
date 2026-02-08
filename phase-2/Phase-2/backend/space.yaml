@@ -1,0 +1,11 @@
+spec:
+  python_version: "3.10"
+  requirements: requirements.txt
+  app_file: app.py
+  secrets:
+    - name: DATABASE_URL
+      description: Database connection string
+      required: true
+    - name: SECRET_KEY
+      description: Secret key for JWT tokens
+      required: true

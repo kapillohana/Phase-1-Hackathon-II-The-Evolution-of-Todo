@@ -1,0 +1,49 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Hugging Face Hub CLI
+      run: |
+        pip install huggingface_hub
+
+    - name: Deploy to Hugging Face Spaces
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+      run: |
+        # Navigate to the backend directory
+        cd phase-2/Phase-2/backend
+        
+        # Initialize git repo for the space
+        git init
+        git remote add origin https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${SPACE_NAME}
+        git fetch
+        git reset origin/main --hard
+        
+        # Configure git
+        git config --local user.name "GitHub Action"
+        git config --local user.email "action@github.com"
+        
+        # Add all files
+        git add .
+        
+        # Commit and push
+        git commit -m "Update Space from GitHub Actions" || exit 0
+        git push origin main
