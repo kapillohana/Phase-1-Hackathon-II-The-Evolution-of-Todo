@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../lib/auth';
+import { useAuth } from '@/lib/auth';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { AuthProvider } from '../lib/auth';
-import { taskApi } from '../lib/api';
+import { AuthProvider } from '@/lib/auth';
+import { taskApi } from '@/lib/api';
 import { HeroSection } from '@/components/ui/hero-section';
 import { FeatureCards } from '@/components/ui/feature-cards';
 import { TestimonialsSection } from '@/components/ui/testimonials-section';

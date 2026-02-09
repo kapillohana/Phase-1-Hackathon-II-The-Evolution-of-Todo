@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // This enables static export for platforms like Netlify
-  trailingSlash: true, // Optional: adds trailing slashes to URLs
   experimental: {
     esmExternals: 'loose',
   },
